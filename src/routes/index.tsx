@@ -9,7 +9,7 @@ import { DoctorCard, type DoctorRow } from "@/components/doctor-card";
 import heroImage from "@/assets/hero-doctor.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "MediCare — Book trusted doctors online" }] }),
+  head: () => ({ meta: [{ title: "Health Care System — Book trusted doctors online" }] }),
   component: HomePage,
 });
 

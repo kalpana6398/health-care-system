@@ -29,13 +29,13 @@ export function SiteFooter() {
         <div>
           <h4 className="mb-3 text-sm font-semibold">Contact</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>support@medicare.health</li>
+            <li>support@healthcaresystem.health</li>
             <li>+1 (800) 555-0199</li>
             <li>24/7 Patient Support</li>
           </ul>
         </div>
       </div>
-      <div className="border-t py-4 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} MediCare. All rights reserved.</div>
+      <div className="border-t py-4 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} Health Care System. All rights reserved.</div>
     </footer>
   );
 }
