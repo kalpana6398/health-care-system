@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({ meta: [{ title: "Contact — MediCare" }] }),
+  head: () => ({ meta: [{ title: "Contact — Health Care System" }] }),
   component: ContactPage,
 });
 
@@ -20,7 +20,7 @@ function ContactPage() {
       </section>
       <section className="mx-auto grid max-w-5xl gap-6 px-4 py-16 md:grid-cols-3">
         {[
-          { icon: Mail, title: "Email", value: "support@medicare.health" },
+          { icon: Mail, title: "Email", value: "support@healthcaresystem.health" },
           { icon: Phone, title: "Phone", value: "+1 (800) 555-0199" },
           { icon: MapPin, title: "Office", value: "100 Wellness Ave, NY" },
         ].map((c) => (

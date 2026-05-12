@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/doctors")({
-  head: () => ({ meta: [{ title: "Find Doctors — MediCare" }, { name: "description", content: "Browse and search verified doctors by name, specialty, or location." }] }),
+  head: () => ({ meta: [{ title: "Find Doctors — Health Care System" }, { name: "description", content: "Browse and search verified doctors by name, specialty, or location." }] }),
   component: DoctorsPage,
 });
 

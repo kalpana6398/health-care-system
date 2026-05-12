@@ -67,7 +67,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <div className="mx-auto flex max-w-md flex-col px-4 py-16">
-        <h1 className="font-display text-3xl font-bold">Welcome to MediCare</h1>
+        <h1 className="font-display text-3xl font-bold">Welcome to Health Care System</h1>
         <p className="mt-2 text-muted-foreground">Login or create an account to book appointments.</p>
         <Tabs defaultValue={tab} className="mt-6">
           <TabsList className="grid w-full grid-cols-2">

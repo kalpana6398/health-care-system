@@ -38,7 +38,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MediCare — Book trusted doctors online" },
+      { title: "Health Care System — Book trusted doctors online" },
       { name: "description", content: "Find doctors by specialty, view profiles, and book appointments instantly." },
     ],
     links: [
