@@ -8,7 +8,7 @@ export function SiteFooter() {
         <div>
           <div className="flex items-center gap-2">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary-gradient text-primary-foreground"><Heart className="h-5 w-5" fill="currentColor" /></span>
-            <span className="font-display text-lg font-bold">MediCare</span>
+            <span className="font-display text-lg font-bold">Health Care System</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">Trusted healthcare, personal care. Book appointments with verified doctors anytime.</p>
         </div>
