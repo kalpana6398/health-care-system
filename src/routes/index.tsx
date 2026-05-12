@@ -40,7 +40,7 @@ function HomePage() {
               <span className="h-2 w-2 rounded-full bg-success" /> 24/7 patient support
             </span>
             <h1 className="mt-4 font-display text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-              Healthcare made <span className="text-primary">human</span>, again.
+              Health Care <span className="text-primary">System</span>
             </h1>
             <p className="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
               Discover trusted doctors, view profiles, and book appointments online — all in one calm, modern place.
