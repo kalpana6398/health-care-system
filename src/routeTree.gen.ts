@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DoctorsRouteImport } from './routes/doctors'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DoctorsDoctorIdRouteImport } from './routes/doctors.$doctorId'
+import { Route as AuthenticatedDoctorRouteImport } from './routes/_authenticated/doctor'
+import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authenticated/appointments'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedBookDoctorIdRouteImport } from './routes/_authenticated/book.$doctorId'
 
 const DoctorsRoute = DoctorsRouteImport.update({
   id: '/doctors',
@@ -30,6 +35,10 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -40,45 +49,104 @@ const DoctorsDoctorIdRoute = DoctorsDoctorIdRouteImport.update({
   path: '/$doctorId',
   getParentRoute: () => DoctorsRoute,
 } as any)
+const AuthenticatedDoctorRoute = AuthenticatedDoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAppointmentsRoute =
+  AuthenticatedAppointmentsRouteImport.update({
+    id: '/appointments',
+    path: '/appointments',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBookDoctorIdRoute =
+  AuthenticatedBookDoctorIdRouteImport.update({
+    id: '/book/$doctorId',
+    path: '/book/$doctorId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/admin': typeof AuthenticatedAdminRoute
+  '/appointments': typeof AuthenticatedAppointmentsRoute
+  '/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
+  '/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/admin': typeof AuthenticatedAdminRoute
+  '/appointments': typeof AuthenticatedAppointmentsRoute
+  '/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
+  '/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
+  '/_authenticated/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
+  '/_authenticated/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/contact' | '/doctors' | '/doctors/$doctorId'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/contact' | '/doctors' | '/doctors/$doctorId'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
     | '/auth'
     | '/contact'
     | '/doctors'
+    | '/admin'
+    | '/appointments'
+    | '/doctor'
     | '/doctors/$doctorId'
+    | '/book/$doctorId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/doctors'
+    | '/admin'
+    | '/appointments'
+    | '/doctor'
+    | '/doctors/$doctorId'
+    | '/book/$doctorId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/contact'
+    | '/doctors'
+    | '/_authenticated/admin'
+    | '/_authenticated/appointments'
+    | '/_authenticated/doctor'
+    | '/doctors/$doctorId'
+    | '/_authenticated/book/$doctorId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DoctorsRoute: typeof DoctorsRouteWithChildren
@@ -107,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,8 +196,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorsDoctorIdRouteImport
       parentRoute: typeof DoctorsRoute
     }
+    '/_authenticated/doctor': {
+      id: '/_authenticated/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof AuthenticatedDoctorRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/appointments': {
+      id: '/_authenticated/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AuthenticatedAppointmentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/book/$doctorId': {
+      id: '/_authenticated/book/$doctorId'
+      path: '/book/$doctorId'
+      fullPath: '/book/$doctorId'
+      preLoaderRoute: typeof AuthenticatedBookDoctorIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAppointmentsRoute: typeof AuthenticatedAppointmentsRoute
+  AuthenticatedDoctorRoute: typeof AuthenticatedDoctorRoute
+  AuthenticatedBookDoctorIdRoute: typeof AuthenticatedBookDoctorIdRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAppointmentsRoute: AuthenticatedAppointmentsRoute,
+  AuthenticatedDoctorRoute: AuthenticatedDoctorRoute,
+  AuthenticatedBookDoctorIdRoute: AuthenticatedBookDoctorIdRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
 
 interface DoctorsRouteChildren {
   DoctorsDoctorIdRoute: typeof DoctorsDoctorIdRoute
@@ -137,6 +258,7 @@ const DoctorsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DoctorsRoute: DoctorsRouteWithChildren,
