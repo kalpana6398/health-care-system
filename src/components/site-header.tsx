@@ -32,7 +32,7 @@ export function SiteHeader() {
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary-gradient text-primary-foreground shadow-soft">
             <Heart className="h-5 w-5" fill="currentColor" />
           </span>
-          <span className="font-display text-lg font-bold tracking-tight">MediCare</span>
+          <span className="font-display text-lg font-bold tracking-tight">Health Care System</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">{navLinks}</nav>
