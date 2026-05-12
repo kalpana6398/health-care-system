@@ -134,7 +134,7 @@ function AdminPage() {
                 <div><Label>Fee ($)</Label><Input name="fee" type="number" defaultValue={editing?.fee ?? 0} /></div>
               </div>
               <div><Label>Location</Label><Input name="location" defaultValue={editing?.location} /></div>
-              <div><Label>Bio</Label><Textarea name="bio" rows={3} defaultValue={editing?.bio} /></div>
+              <div><Label>Bio</Label><Textarea name="bio" rows={3} defaultValue={editing?.bio ?? ""} /></div>
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1 bg-primary-gradient">{editingId ? "Save" : "Add doctor"}</Button>
                 {editingId && <Button type="button" variant="outline" onClick={() => setEditingId(null)}>Cancel</Button>}
