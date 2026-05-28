@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DownloadRouteImport } from './routes/download'
 import { Route as DoctorsRouteImport } from './routes/doctors'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -18,8 +19,14 @@ import { Route as DoctorsDoctorIdRouteImport } from './routes/doctors.$doctorId'
 import { Route as AuthenticatedDoctorRouteImport } from './routes/_authenticated/doctor'
 import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authenticated/appointments'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicDownloadRouteImport } from './routes/api.public.download'
 import { Route as AuthenticatedBookDoctorIdRouteImport } from './routes/_authenticated/book.$doctorId'
 
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DoctorsRoute = DoctorsRouteImport.update({
   id: '/doctors',
   path: '/doctors',
@@ -65,6 +72,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicDownloadRoute = ApiPublicDownloadRouteImport.update({
+  id: '/api/public/download',
+  path: '/api/public/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedBookDoctorIdRoute =
   AuthenticatedBookDoctorIdRouteImport.update({
     id: '/book/$doctorId',
@@ -77,22 +89,26 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/download': typeof DownloadRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
   '/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/download': typeof DownloadRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
   '/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,11 +117,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/doctors': typeof DoctorsRouteWithChildren
+  '/download': typeof DownloadRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/doctor': typeof AuthenticatedDoctorRoute
   '/doctors/$doctorId': typeof DoctorsDoctorIdRoute
   '/_authenticated/book/$doctorId': typeof AuthenticatedBookDoctorIdRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -114,22 +132,26 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/doctors'
+    | '/download'
     | '/admin'
     | '/appointments'
     | '/doctor'
     | '/doctors/$doctorId'
     | '/book/$doctorId'
+    | '/api/public/download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/contact'
     | '/doctors'
+    | '/download'
     | '/admin'
     | '/appointments'
     | '/doctor'
     | '/doctors/$doctorId'
     | '/book/$doctorId'
+    | '/api/public/download'
   id:
     | '__root__'
     | '/'
@@ -137,11 +159,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/doctors'
+    | '/download'
     | '/_authenticated/admin'
     | '/_authenticated/appointments'
     | '/_authenticated/doctor'
     | '/doctors/$doctorId'
     | '/_authenticated/book/$doctorId'
+    | '/api/public/download'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -150,10 +174,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DoctorsRoute: typeof DoctorsRouteWithChildren
+  DownloadRoute: typeof DownloadRoute
+  ApiPublicDownloadRoute: typeof ApiPublicDownloadRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/doctors': {
       id: '/doctors'
       path: '/doctors'
@@ -217,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/download': {
+      id: '/api/public/download'
+      path: '/api/public/download'
+      fullPath: '/api/public/download'
+      preLoaderRoute: typeof ApiPublicDownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/book/$doctorId': {
       id: '/_authenticated/book/$doctorId'
       path: '/book/$doctorId'
@@ -262,7 +302,19 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DoctorsRoute: DoctorsRouteWithChildren,
+  DownloadRoute: DownloadRoute,
+  ApiPublicDownloadRoute: ApiPublicDownloadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
