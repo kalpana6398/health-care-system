@@ -85,6 +85,35 @@ function AdminPage() {
 
   const editing = doctors?.find((d: any) => d.id === editingId);
 
+  const updateApptStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("appointments").update({ status: status as any }).eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success(`Appointment ${status}`); qc.invalidateQueries({ queryKey: ["admin-appts"] }); }
+  };
+  const deleteAppt = async (id: string) => {
+    if (!confirm("Delete this appointment?")) return;
+    const { error } = await supabase.from("appointments").delete().eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success("Deleted"); qc.invalidateQueries({ queryKey: ["admin-appts"] }); }
+  };
+  const patientById = (id: string) => profiles?.find((p: any) => p.id === id);
+
+  const filteredAppts = (appts ?? []).filter((a: any) => statusFilter === "all" || a.status === statusFilter);
+  const statusCounts = {
+    all: appts?.length ?? 0,
+    pending: appts?.filter((a: any) => a.status === "pending").length ?? 0,
+    accepted: appts?.filter((a: any) => a.status === "accepted").length ?? 0,
+    rejected: appts?.filter((a: any) => a.status === "rejected").length ?? 0,
+    completed: appts?.filter((a: any) => a.status === "completed").length ?? 0,
+  };
+  const statusBadge: Record<string, string> = {
+    pending: "bg-warning/20 text-warning-foreground",
+    accepted: "bg-success/20 text-success",
+    rejected: "bg-destructive/20 text-destructive",
+    completed: "bg-primary-soft text-primary",
+  };
+
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
