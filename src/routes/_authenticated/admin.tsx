@@ -34,8 +34,9 @@ function AdminPage() {
   });
   const { data: appts } = useQuery({
     queryKey: ["admin-appts"],
-    queryFn: async () => (await supabase.from("appointments").select("id, appointment_date, status, doctor:doctors(name)").order("appointment_date", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("appointments").select("id, appointment_date, appointment_time, status, problem, patient_id, doctor:doctors(name, specialization)").order("appointment_date", { ascending: false })).data ?? [],
   });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const { data: profiles } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => (await supabase.from("profiles").select("*").order("created_at", { ascending: false })).data ?? [],
