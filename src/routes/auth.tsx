@@ -94,6 +94,8 @@ function AuthPage() {
               <div><Label htmlFor="le">Email</Label><Input id="le" name="email" type="email" required /></div>
               <div><Label htmlFor="lp">Password</Label><Input id="lp" name="password" type="password" required /></div>
               <Button type="submit" disabled={loading} className="w-full bg-primary-gradient">{loading ? "Signing in..." : "Sign in"}</Button>
+              <div className="relative my-2 text-center text-xs text-muted-foreground"><span className="bg-card px-2 relative z-10">or</span><div className="absolute inset-x-0 top-1/2 h-px bg-border" /></div>
+              <GoogleBtn />
             </form>
           </TabsContent>
           <TabsContent value="register">
@@ -102,6 +104,8 @@ function AuthPage() {
               <div><Label htmlFor="re">Email</Label><Input id="re" name="email" type="email" required /></div>
               <div><Label htmlFor="rp">Password</Label><Input id="rp" name="password" type="password" required minLength={6} /></div>
               <Button type="submit" disabled={loading} className="w-full bg-primary-gradient">{loading ? "Creating..." : "Create account"}</Button>
+              <div className="relative my-2 text-center text-xs text-muted-foreground"><span className="bg-card px-2 relative z-10">or</span><div className="absolute inset-x-0 top-1/2 h-px bg-border" /></div>
+              <GoogleBtn />
             </form>
           </TabsContent>
         </Tabs>
