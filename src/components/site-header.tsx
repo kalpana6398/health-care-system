@@ -22,6 +22,7 @@ export function SiteHeader() {
       {user && <Link to="/appointments" className="text-sm font-medium hover:text-primary transition" activeProps={{ className: "text-primary" }}>My Appointments</Link>}
       {isDoctor && <Link to="/doctor" className="text-sm font-medium hover:text-primary transition" activeProps={{ className: "text-primary" }}>Doctor Panel</Link>}
       {isAdmin && <Link to="/admin" className="text-sm font-medium hover:text-primary transition" activeProps={{ className: "text-primary" }}>Admin</Link>}
+      <Link to="/download" className="text-sm font-medium hover:text-primary transition flex items-center gap-1" activeProps={{ className: "text-primary" }}><Download className="h-3.5 w-3.5" /> Download</Link>
     </>
   );
 
