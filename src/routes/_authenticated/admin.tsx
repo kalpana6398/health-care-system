@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CalendarCheck, Stethoscope, Trash2, Users } from "lucide-react";
+import { CalendarCheck, Check, Stethoscope, Trash2, Users, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async () => {
@@ -33,8 +34,9 @@ function AdminPage() {
   });
   const { data: appts } = useQuery({
     queryKey: ["admin-appts"],
-    queryFn: async () => (await supabase.from("appointments").select("id, appointment_date, status, doctor:doctors(name)").order("appointment_date", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("appointments").select("id, appointment_date, appointment_time, status, problem, patient_id, doctor:doctors(name, specialization)").order("appointment_date", { ascending: false })).data ?? [],
   });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const { data: profiles } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => (await supabase.from("profiles").select("*").order("created_at", { ascending: false })).data ?? [],
@@ -82,6 +84,35 @@ function AdminPage() {
   };
 
   const editing = doctors?.find((d: any) => d.id === editingId);
+
+  const updateApptStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("appointments").update({ status: status as any }).eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success(`Appointment ${status}`); qc.invalidateQueries({ queryKey: ["admin-appts"] }); }
+  };
+  const deleteAppt = async (id: string) => {
+    if (!confirm("Delete this appointment?")) return;
+    const { error } = await supabase.from("appointments").delete().eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success("Deleted"); qc.invalidateQueries({ queryKey: ["admin-appts"] }); }
+  };
+  const patientById = (id: string) => profiles?.find((p: any) => p.id === id);
+
+  const filteredAppts = (appts ?? []).filter((a: any) => statusFilter === "all" || a.status === statusFilter);
+  const statusCounts = {
+    all: appts?.length ?? 0,
+    pending: appts?.filter((a: any) => a.status === "pending").length ?? 0,
+    accepted: appts?.filter((a: any) => a.status === "accepted").length ?? 0,
+    rejected: appts?.filter((a: any) => a.status === "rejected").length ?? 0,
+    completed: appts?.filter((a: any) => a.status === "completed").length ?? 0,
+  };
+  const statusBadge: Record<string, string> = {
+    pending: "bg-warning/20 text-warning-foreground",
+    accepted: "bg-success/20 text-success",
+    rejected: "bg-destructive/20 text-destructive",
+    completed: "bg-primary-soft text-primary",
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,16 +173,58 @@ function AdminPage() {
             </form>
           </TabsContent>
 
-          <TabsContent value="appointments" className="mt-4 space-y-2">
-            {appts?.map((a: any) => (
-              <div key={a.id} className="flex items-center justify-between rounded-xl border bg-card p-4 shadow-soft">
-                <div>
-                  <div className="font-medium">{a.doctor?.name ?? "—"}</div>
-                  <div className="text-sm text-muted-foreground">{a.appointment_date}</div>
+          <TabsContent value="appointments" className="mt-4 space-y-3">
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-3 shadow-soft">
+              <span className="text-sm font-medium mr-2">Filter:</span>
+              {(["all", "pending", "accepted", "rejected", "completed"] as const).map((s) => (
+                <Button key={s} size="sm" variant={statusFilter === s ? "default" : "outline"} onClick={() => setStatusFilter(s)} className={statusFilter === s ? "bg-primary-gradient" : ""}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)} ({statusCounts[s]})
+                </Button>
+              ))}
+            </div>
+            {filteredAppts.length === 0 && (
+              <div className="rounded-2xl border bg-card p-10 text-center text-muted-foreground shadow-soft">No appointments to show.</div>
+            )}
+            {filteredAppts.map((a: any) => {
+              const p = patientById(a.patient_id);
+              return (
+                <div key={a.id} className="flex flex-col gap-3 rounded-2xl border bg-card p-5 shadow-soft md:flex-row md:items-center md:justify-between">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-display text-lg font-semibold">Dr. {a.doctor?.name ?? "—"}</span>
+                      <span className="text-sm text-muted-foreground">· {a.doctor?.specialization}</span>
+                      <Badge className={statusBadge[a.status] ?? ""}>{a.status}</Badge>
+                    </div>
+                    <div className="mt-1 text-sm">
+                      <span className="font-medium">Patient:</span> {p?.full_name || "Unknown"}
+                      {p?.phone && <span className="text-muted-foreground"> · {p.phone}</span>}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{a.appointment_date} at {a.appointment_time?.slice(0, 5)}</div>
+                    {a.problem && <p className="mt-1 text-sm italic text-muted-foreground">"{a.problem}"</p>}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {a.status !== "accepted" && (
+                      <Button size="sm" onClick={() => updateApptStatus(a.id, "accepted")} className="bg-success text-success-foreground hover:bg-success/90">
+                        <Check className="mr-1 h-4 w-4" /> Approve
+                      </Button>
+                    )}
+                    {a.status !== "rejected" && (
+                      <Button size="sm" variant="destructive" onClick={() => updateApptStatus(a.id, "rejected")}>
+                        <X className="mr-1 h-4 w-4" /> Reject
+                      </Button>
+                    )}
+                    {a.status === "accepted" && (
+                      <Button size="sm" variant="outline" onClick={() => updateApptStatus(a.id, "completed")}>
+                        Mark complete
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" onClick={() => deleteAppt(a.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-                <Badge>{a.status}</Badge>
-              </div>
-            ))}
+              );
+            })}
           </TabsContent>
 
           <TabsContent value="users" className="mt-4 space-y-2">
