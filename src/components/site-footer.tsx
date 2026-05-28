@@ -18,6 +18,7 @@ export function SiteFooter() {
             <li><Link to="/doctors" className="hover:text-primary">Find Doctors</Link></li>
             <li><Link to="/appointments" className="hover:text-primary">My Appointments</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
+            <li><Link to="/download" className="hover:text-primary">Download Project</Link></li>
           </ul>
         </div>
         <div>
